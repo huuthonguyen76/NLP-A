@@ -3,12 +3,10 @@ from database import PaperDao
 from extractors import InformationExtractor
 
 
-# paper = PaperDao.get('66423a06761089191a2797f7')
+# papers = [PaperDao.get('66423b15a497602e0c390952')]
 papers = PaperDao.get_all()
 info_extractor = InformationExtractor()
 for i, paper in enumerate(papers):
-    if i < 197:
-        continue
     st = time()
     print("=" * 10, f"Paper {i} / {len(papers)}", "=" * 10)
     print(paper.id)
