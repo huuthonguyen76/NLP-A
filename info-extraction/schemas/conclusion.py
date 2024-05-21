@@ -35,5 +35,5 @@ class MainConclusion(BaseModel):
 
 
 class Conclusions(BaseModel):
-    sections: List[SectionConclusion]
-    main_conclusion: MainConclusion
+    sections: List[SectionConclusion] = []
+    main_conclusion: MainConclusion = MainConclusion()

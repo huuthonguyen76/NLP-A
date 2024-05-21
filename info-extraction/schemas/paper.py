@@ -1,6 +1,10 @@
+from typing import List
 from pydantic import BaseModel
 from bson import ObjectId
 from .author import Author
+from .conclusion import Conclusions
+from .demographic import Demographic
+from .disease import Disease
 
 
 class Paper(BaseModel):
@@ -40,7 +44,9 @@ class PaperResponse(BaseModel):
     publication_year: str = ""
     authors: list[Author] = []
     content: str = ""
-    main_conclusion: str = ""
+    conclusions: Conclusions = Conclusions()
+    demographic: Demographic = Demographic()
+    diseases: List[Disease] = []
 
 
 class Metadata(BaseModel):

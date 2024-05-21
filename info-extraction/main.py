@@ -4,9 +4,13 @@ from extractors import InformationExtractor
 
 
 # papers = [PaperDao.get('66423b15a497602e0c390952')]
+# print(papers)
 papers = PaperDao.get_all()
 info_extractor = InformationExtractor()
 for i, paper in enumerate(papers):
+    if paper.conclusions.main_conclusion.conclusion.strip() != "":
+        continue
+
     st = time()
     print("=" * 10, f"Paper {i} / {len(papers)}", "=" * 10)
     print(paper.id)

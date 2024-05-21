@@ -65,10 +65,10 @@ class Gender(BaseModel):
 
 
 class Demographic(BaseModel):
-    has_participants: bool = Field(description="True if there is a conducted experiment by the author and there are invited participants, otherwise, return False", default="")
-    location: Location
-    sample_size: SampleSize
-    gender: Gender
+    has_participants: bool | str = Field(description="True if there is a conducted experiment by the author and there are invited participants, otherwise, return False", default=False)
+    location: Location = Location()
+    sample_size: SampleSize = SampleSize()
+    gender: Gender = Gender()
 
     class Config:
         validate_assignment = True
@@ -76,4 +76,3 @@ class Demographic(BaseModel):
     @validator('has_participants')
     def set_has_participants(cls, value):
         return value or False
-

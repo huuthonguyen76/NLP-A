@@ -56,7 +56,7 @@ class BaseExtractor(Generic[T]):
                     },
                     {
                         "role": "user",
-                        "content": f"### Article Content:\n{paper_content}"
+                        "content": f"### Article Content:\n{chunk}"
                     },
                 ]
             )
