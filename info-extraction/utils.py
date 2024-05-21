@@ -33,6 +33,10 @@ def split_paper(paper_content: str):
         chunks.append(sub_content)
         i += hop_len
 
+    if len(chunks) > 5:
+        print("Too many chunks", len(chunks))
+        print("Truncated to 5 chunks")
+        chunks = chunks[:3] + chunks[-2:]
     return chunks
 
 

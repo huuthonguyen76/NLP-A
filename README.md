@@ -1,2 +1,3 @@
 ### Generative AI - Paper Search
-- **Information Extraction**: See [README.md](./info-extraction/README.md)
+- **Paper Crawler**: See [Instructions](./crawler/README.md)
+- **Information Extraction**: See [Instructions](./info-extraction/README.md)
