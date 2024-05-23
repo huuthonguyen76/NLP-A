@@ -53,10 +53,9 @@ def custom_parse_choice_select_answer_fn(
     """parse choice select answer function."""
     answer_nums = []
     answer_relevances = []
-    print(answer)
     try:
         answer_nums, answer_relevances = default_parse_choice_select_answer_fn(answer, num_choices, raise_error)
-    except :
+    except:
         # no relevant choices found
         print("Warning:", answer)
     return answer_nums, answer_relevances
@@ -69,7 +68,7 @@ class SearchEngine:
         top_k_candidates: int = 10
     ):
         self.llm = OpenAI(
-            model="gpt-4-turbo-preview",
+            model=settings.MODEL_NAME,
             api_key=settings.OPENAI_API_KEY
         )
 
