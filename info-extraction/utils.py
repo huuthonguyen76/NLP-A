@@ -6,7 +6,12 @@ def remove_ref(text):
     return text
 
 
-def split_paper(paper_content: str):
+def split_paper(
+    paper_content: str,
+    max_len: int = 30000,
+    window_len: int = 20000,
+    hop_len: int = 10000
+):
     '''
     Split the paper into chunks in case it is too long
 
@@ -16,9 +21,6 @@ def split_paper(paper_content: str):
     Mean: 9187
     '''
     # Ignore this if using GPT-4
-    max_len = 40000
-    window_len = 30000
-    hop_len = 10000
     if len(paper_content) < max_len:
         return [paper_content]
 

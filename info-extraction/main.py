@@ -8,6 +8,8 @@ from extractors import InformationExtractor
 papers = PaperDao.get_all()
 info_extractor = InformationExtractor()
 for i, paper in enumerate(papers):
+    if i < 692:
+        continue
     if paper.conclusions.main_conclusion.conclusion.strip() != "":
         continue
 
