@@ -2,7 +2,7 @@
 ## Installation
 1. Create a virtual environment
 ```
-conda create -n crawler python=3.10
+conda create -n crawler python=3.11.9
 conda activate crawler
 ```
 2. Install dependencies.
