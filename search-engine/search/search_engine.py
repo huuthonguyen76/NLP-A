@@ -1,4 +1,5 @@
 import os
+import re
 from time import time
 from datetime import datetime
 from typing import List, Tuple
@@ -8,7 +9,6 @@ from llama_index.core.tools import RetrieverTool
 from llama_index.core.schema import NodeWithScore, TextNode
 from llama_index.core.postprocessor import LLMRerank
 from llama_index.core import QueryBundle
-from llama_index.core.indices.utils import default_parse_choice_select_answer_fn
 from llama_index.llms.openai import OpenAI
 
 from .metadata_index import MetadataIndex
@@ -46,18 +46,36 @@ def parse_json(json_str, marker="{}"):
     return None
 
 
-
 def custom_parse_choice_select_answer_fn(
     answer: str, num_choices: int, raise_error: bool = False
 ) -> Tuple[List[int], List[float]]:
     """parse choice select answer function."""
+    print(answer)
     answer_nums = []
     answer_relevances = []
-    try:
-        answer_nums, answer_relevances = default_parse_choice_select_answer_fn(answer, num_choices, raise_error)
-    except:
-        # no relevant choices found
-        print("Warning:", answer)
+    answer_lines = answer.split("\n")
+    for answer_line in answer_lines:
+        try:
+            line_tokens = answer_line.split(",")
+            if len(line_tokens) != 2:
+                if not raise_error:
+                    continue
+                else:
+                    raise ValueError(
+                        f"Invalid answer line: {answer_line}. "
+                        "Answer line must be of the form: "
+                        "answer_num: <int>, answer_relevance: <float>"
+                    )
+            answer_num = int(line_tokens[0].split(":")[1].strip())
+            if answer_num > num_choices:
+                continue
+            answer_nums.append(answer_num)
+            # extract just the first digits after the colon.
+            _answer_relevance = re.findall(r"\d+", line_tokens[1].split(":")[1].strip())[0]
+            answer_relevances.append(float(_answer_relevance))
+        except Exception as e:
+            # no relevant choices found
+            print(e)
     return answer_nums, answer_relevances
 
 
@@ -166,5 +184,5 @@ class SearchEngine:
             nodes += index.retriever.retrieve(sub_query)
 
         nodes = self.process_nodes(nodes)
-        nodes = self.rerank(refined_query, nodes, top_k=top_k)
+        nodes = self.rerank(query + "\n" + refined_query, nodes, top_k=top_k)
         return nodes

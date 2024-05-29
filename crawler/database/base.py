@@ -16,7 +16,9 @@ class Database(Generic[T]):
         self.pydantic_model = pydantic_model
 
     def insert(self, item: BaseModel):
-        self.collection.insert_one(item.dict())
+        result = self.collection.insert_one(item.dict())
+        if result is not None:
+            return result.inserted_id
 
     def get(self, id: str) -> T:
         item = self.collection.find_one(filter={
@@ -26,7 +28,6 @@ class Database(Generic[T]):
             return None
         model = self.pydantic_model.model_validate(item)
         model.id = str(item["_id"])
-        # return self.pydantic_model(**item, id=str(item["_id"]))
         return model
 
     def update(self, id: str, item: dict):
@@ -38,7 +39,6 @@ class Database(Generic[T]):
         result = self.collection.find()
         if result is None:
             return None
-        # return [self.pydantic_model.model_validate(**item, id=str(item["_id"])) for item in result]
         items = []
         for item in result:
             model = self.pydantic_model.model_validate(item, strict=False)

@@ -16,7 +16,7 @@ def print_results(nodes):
 if __name__ == "__main__":
     engine = SearchEngine(
         index_dir="./data/index",
-        top_k_candidates=10,
+        top_k_candidates=20,
     )
 
     while True:
