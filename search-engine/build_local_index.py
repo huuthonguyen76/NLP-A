@@ -4,6 +4,7 @@ from search.metadata_index import MetadataIndex
 from search.main_conclusion_index import MainConclusionIndex
 from search.disease_index import DiseaseIndex
 from search.demographic_index import DemographicIndex
+from search.combine_index import CombineIndex
 
 
 out_dir = "./data/index"
@@ -13,7 +14,8 @@ indices = {
     "metadata": MetadataIndex(),
     "main_conclusion": MainConclusionIndex(),
     "disease": DiseaseIndex(),
-    "demographic": DemographicIndex()
+    "demographic": DemographicIndex(),
+    "combine": CombineIndex()
 }
 
 for key, index in indices.items():

@@ -15,6 +15,7 @@ from .metadata_index import MetadataIndex
 from .main_conclusion_index import MainConclusionIndex
 from .disease_index import DiseaseIndex
 from .demographic_index import DemographicIndex
+from .combine_index import CombineIndex
 from database import PaperDao
 from prompts.query_refine import QUERY_TRANSFORMRATION
 
@@ -50,10 +51,10 @@ def custom_parse_choice_select_answer_fn(
     answer: str, num_choices: int, raise_error: bool = False
 ) -> Tuple[List[int], List[float]]:
     """parse choice select answer function."""
-    print(answer)
+    # print(answer)
     answer_nums = []
     answer_relevances = []
-    answer_lines = answer.split("\n")
+    answer_lines = answer.split("Answer:")[-1].split("\n")
     for answer_line in answer_lines:
         try:
             line_tokens = answer_line.split(",")
@@ -75,7 +76,8 @@ def custom_parse_choice_select_answer_fn(
             answer_relevances.append(float(_answer_relevance))
         except Exception as e:
             # no relevant choices found
-            print(e)
+            # print("Error", e)
+            pass
     return answer_nums, answer_relevances
 
 
@@ -94,7 +96,8 @@ class SearchEngine:
             "metadata": MetadataIndex(),
             "main_conclusion": MainConclusionIndex(),
             "disease": DiseaseIndex(),
-            "demographic": DemographicIndex()
+            "demographic": DemographicIndex(),
+            "combine": DemographicIndex()
         }
 
         for key, index in self.indices.items():
@@ -178,11 +181,18 @@ class SearchEngine:
 
         nodes = []
         for key, index in self.indices.items():
-            sub_query = json_output.get(key, query)
+            if key != "combine":
+                sub_query = json_output.get(key, query)
+            else:
+                sub_query = "Title: " + json_output.get("metadata", "")
+                sub_query += "\nDiseases: " + json_output.get("disease", "")
+                sub_query += "\n" + json_output.get("demographic", "")
+                sub_query += "\n" + json_output.get("main_conclusion", "")
+
             if len(sub_query.strip()) == 0:
                 continue
             nodes += index.retriever.retrieve(sub_query)
 
         nodes = self.process_nodes(nodes)
-        nodes = self.rerank(query + "\n" + refined_query, nodes, top_k=top_k)
+        nodes = self.rerank(query, nodes, top_k=top_k)
         return nodes
