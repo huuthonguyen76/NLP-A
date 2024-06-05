@@ -51,6 +51,7 @@ def custom_parse_choice_select_answer_fn(
     answer: str, num_choices: int, raise_error: bool = False
 ) -> Tuple[List[int], List[float]]:
     """parse choice select answer function."""
+    # TODO: Write cutom prompt to extract and parse relevant scores
     # print(answer)
     answer_nums = []
     answer_relevances = []
@@ -92,6 +93,7 @@ class SearchEngine:
             api_key=settings.OPENAI_API_KEY
         )
 
+        # Change the indices here
         self.indices = {
             "metadata": MetadataIndex(),
             "main_conclusion": MainConclusionIndex(),
@@ -133,6 +135,7 @@ class SearchEngine:
                 paper = PaperDao.get(paper_id)
                 paper_dict[paper_id] = [0, self.paper_to_str(paper)]
 
+            # TODO: find better way to calculate the aggregated score (instead of just summing)
             paper_dict[paper_id][0] += node.score
 
         # build paper nodes
@@ -154,7 +157,7 @@ class SearchEngine:
     def rerank(self, query: str, nodes: List[NodeWithScore], top_k: int = 5):
         # configure reranker
         reranker = LLMRerank(
-            choice_batch_size=10,
+            choice_batch_size=10,  # TODO: find optimal batch size for LLM Reranking
             top_n=top_k,
             llm=self.llm,
             parse_choice_select_answer_fn=custom_parse_choice_select_answer_fn
@@ -168,6 +171,7 @@ class SearchEngine:
 
     def query(self, query: str, top_k: int = 5):
         # refine the query in case it is too long and complicated
+        # TODO: enhance the prompt for query formulation
         prompt = QUERY_TRANSFORMRATION.format(
             time=f"{datetime.now()}",
             query=query

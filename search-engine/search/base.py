@@ -74,6 +74,7 @@ class BaseIndex:
             ))
 
         faiss_index = faiss.IndexFlatIP(768)
+        # Replace FAISS by Vector database
         vector_store = FaissVectorStore(faiss_index=faiss_index)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         self.index = VectorStoreIndex(

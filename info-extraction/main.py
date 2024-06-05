@@ -2,11 +2,19 @@ from time import time
 from database import PaperDao
 from extractors import InformationExtractor
 
+##################
+# Fetch all papers from MongoDB to extract main_conclusion, diseases, and demographic
+# Store the results back to MongoDB
+##################
 
-id_list = ['66575cc36d6b0aa04a1dbea3', '66575cc46d6b0aa04a1dbea4', '66575cc46d6b0aa04a1dbea5', '66575cc46d6b0aa04a1dbea6', '66575cc46d6b0aa04a1dbea7', '66575cc46d6b0aa04a1dbea8', '66575cc46d6b0aa04a1dbea9', '66575cc46d6b0aa04a1dbeaa', '66575cc46d6b0aa04a1dbeab', '66575cc46d6b0aa04a1dbeac', '66575cc46d6b0aa04a1dbead', '66575cc46d6b0aa04a1dbeae', '66575cc46d6b0aa04a1dbeaf']
-papers = [PaperDao.get(id) for id in id_list]
-# print(papers)
-# papers = PaperDao.get_all()
+
+# custom list
+# id_list = ['66575cc36d6b0aa04a1dbea3', '66575cc46d6b0aa04a1dbea4', '66575cc46d6b0aa04a1dbea5', '66575cc46d6b0aa04a1dbea6', '66575cc46d6b0aa04a1dbea7', '66575cc46d6b0aa04a1dbea8', '66575cc46d6b0aa04a1dbea9', '66575cc46d6b0aa04a1dbeaa', '66575cc46d6b0aa04a1dbeab', '66575cc46d6b0aa04a1dbeac', '66575cc46d6b0aa04a1dbead', '66575cc46d6b0aa04a1dbeae', '66575cc46d6b0aa04a1dbeaf']
+# papers = [PaperDao.get(id) for id in id_list]
+
+# All papers
+papers = PaperDao.get_all()
+print(papers)
 info_extractor = InformationExtractor()
 for i, paper in enumerate(papers):
     if paper.conclusions.main_conclusion.conclusion.strip() != "":
